@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;
       } else {
         document.cookie = `auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+        document.cookie = `user-role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
       }
     });
     return () => unsubscribe();

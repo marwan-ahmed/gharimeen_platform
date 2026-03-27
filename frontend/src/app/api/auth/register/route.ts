@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/db";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
@@ -15,26 +16,24 @@ export async function POST(req: Request) {
     }
 
     if (role === "donor") {
-      // للمتبرع: لا نحتاج سوى المعرّف (uid) والبريد الإلكتروني לפי الـ Schema الحالية
       const existingDonor = await prisma.donor.findUnique({ where: { id: uid } });
-      
       if (!existingDonor) {
         await prisma.donor.create({
-          data: {
-            id: uid,
-            email: email,
-          },
+          data: { id: uid, email: email },
         });
       }
-    } else if (role === "gharim") {
-      // للغارم: الـ Schema للموديل (Gharim) تتطلب حقوق إلزامية مثل الاسم، الرقم الوطني، العنوان، ورقم الهاتف.
-      // لذلك لا يمكننا إنشاء السجل هنا بمعلومات البريد الإلكتروني فقط. 
-      // سيتم تأجيل إنشاء السجل لمرحلة تعبئة "نموذج تقديم الطلب" (Apply Form)
-      // ولكن حساب الفايربيس (Auth) موجود وحقيقي.
-      console.log(`Gharim user ${uid} authenticated. Pending DB record creation in /apply.`);
-    }
+    } 
 
-    return NextResponse.json({ success: true });
+    // تخزين الدور كـ Cookie محمي (HttpOnly) لمعرفته في الـ Middleware بأمان
+    const cookieStore = await cookies();
+    cookieStore.set("user-role", role, { 
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production', 
+      path: '/', 
+      maxAge: 86400 
+    });
+
+    return NextResponse.json({ success: true, role });
   } catch (error: any) {
     console.error("Register API Error:", error);
     return NextResponse.json(

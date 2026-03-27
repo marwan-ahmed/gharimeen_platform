@@ -48,7 +48,7 @@ export default function RegisterPage() {
       if (role === "gharim") {
         router.push("/apply"); // توجيه الغارم لصفحة التقديم لملء بياناته الإلزامية
       } else {
-        router.push("/"); // توجيه المتبرع للصفحة الرئيسية أو لوحة تحكم المتبرع
+        router.push("/donor-dashboard"); // توجيه المتبرع لوحة تحكم المتبرع
       }
     } catch (err: any) {
       // التعامل مع أخطاء Firebase

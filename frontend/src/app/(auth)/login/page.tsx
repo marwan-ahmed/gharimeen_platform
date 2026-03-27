@@ -23,9 +23,25 @@ function LoginForm() {
     setError("");
     
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      // جلب وتوثيق دور المستخدم من قاعدة البيانات وتعيين كوكيز الحماية
+      const verifyRes = await fetch("/api/auth/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uid: userCredential.user.uid }),
+      });
+      const verifyData = await verifyRes.json();
+      
       // توجيه ذكي: نتحقق إذا كان هناك مسار قادم منه
-      const redirectUrl = searchParams.get("redirect") || "/";
+      let redirectUrl = searchParams.get("redirect");
+      
+      if (!redirectUrl) {
+        if (verifyData.role === "admin") redirectUrl = "/admin-dashboard";
+        else if (verifyData.role === "donor") redirectUrl = "/donor-dashboard";
+        else redirectUrl = "/dashboard";
+      }
+
       router.push(redirectUrl);
     } catch (err: any) {
       setError("البريد الإلكتروني أو كلمة المرور غير صحيحة");
