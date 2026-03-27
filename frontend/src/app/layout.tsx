@@ -31,7 +31,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${beVietnamPro.variable} ${plusJakartaSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-surface text-on-background">
+      <body className="min-h-full flex flex-col bg-surface text-on-background" suppressHydrationWarning>
         <AuthProvider>
           {children}
         </AuthProvider>

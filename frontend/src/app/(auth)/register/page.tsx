@@ -46,7 +46,7 @@ export default function RegisterPage() {
 
       // التوجيه بناءً على الهدف من التسجيل
       if (role === "gharim") {
-        router.push("/apply"); // توجيه الغارم لصفحة التقديم لملء بياناته الإلزامية
+        router.push("/dashboard"); // توجيه الغارم للوحة التحكم لإدارة حسابه وتقديم طلب منه
       } else {
         router.push("/donor-dashboard"); // توجيه المتبرع لوحة تحكم المتبرع
       }
