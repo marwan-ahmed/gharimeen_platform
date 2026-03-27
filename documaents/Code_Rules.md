@@ -2,6 +2,17 @@
 
 ## قواعد الكود وـ Copilot Instructions
 
+## القواعد الثابتة (Non-Negotiable Core Rules)
+
+يجب الالتزام الصارم بالقواعد التالية في كافة ملفات ومراحل التطوير ولا يُسمح بمخالفتها إطلاقاً:
+
+1. **اللغة:** اللغة العربية هي اللغة الأساسية للواجهات (RTL) ورسائل النظام والتواصل.
+2. **المنطقة الجغرافية:** المنصة موجهة بشكل خاص لـ (العراق - محافظة صلاح الدين - مدينة سامراء).
+3. **العملة:** العملة المعتمدة لجميع المبالغ المالية والمعاملات هي (الدينار العراقي - IQD).
+4. **الملكية والتطوير:** المطور وصاحب المنصة والمشروع هو (مروان أحمد).
+5. **المصادقة والمعرفات:** يتم استخدام (Firebase) لتسجيل الدخول، لذا يجب أن تكون المعرفات (IDs) متوافقة مع Firebase UIDs (كمثال: `String @id @default(uuid())`).
+6. **قاعدة البيانات:** المشغل الرئيسي لقاعدة البيانات سيكون منصة (Neon - Serverless Postgres).
+
 ---
 
 ## Naming Conventions
@@ -161,27 +172,19 @@ const DirectDonationSchema = z.object({
 
 ## File Structure Quick Reference
 
+يُمنع التكرار (DRY Principle)، وتُقسم الملفات بدقة حسب المهام لسهولة التطوير والصيانة:
+
 ```
-src/
-├── app/
-│   ├── (public)/
-│   │   ├── page.tsx              Landing Page
-│   │   └── cases/page.tsx        قائمة الحالات
-│   ├── (gharim)/
-│   │   ├── apply/page.tsx        نموذج التقديم
-│   │   └── status/[id]/page.tsx  متابعة الحالة
-│   ├── (donor)/
-│   │   ├── cases/[id]/page.tsx   تفاصيل الحالة
-│   │   └── donate/page.tsx       صفحة التبرع
-│   └── (admin)/
-│       ├── dashboard/page.tsx    لوحة التحكم
-│       ├── requests/page.tsx     الطلبات المعلقة
-│       └── payments/page.tsx     إدارة المدفوعات
-├── api/
-│   ├── gharimeen/route.ts
-│   ├── cases/route.ts
-│   ├── donations/route.ts
-│   └── admin/
-│       ├── requests/route.ts
-│       └── payments/route.ts
+├── documaents/            # (موجود) مستندات المشروع، التصميم ورؤية المنصة
+├── sql_queries/           # مجلد مخصص لحفظ أوامر SQL الخام المعقدة لسهولة صيانتها
+├── src/
+│   ├── components/        # مجلد مخصص لعناصر التصميم UI (أزرار، حقول، بطاقات) لمنع تكرار الكود
+│   ├── providers/         # مجلد مزودات الخدمات (Firebase Auth Context, Theme Providers)
+│   ├── lib/               # (أو services) للاتصال بالخدمات الخارجية وأدوات مساعدة
+│   ├── db/                # إعدادات ارتباط قاعدة البيانات (Prisma + Neon)
+│   └── app/               # مجلد الواجهات والصفحات (Next.js App Router)
+│       ├── (public)/      # صفحات العامة
+│       ├── (gharim)/      # صفحات الغارمين
+│       ├── (donor)/       # صفحات المتبرعين
+│       └── (admin)/       # لوحة تحكم الإدارة
 ```

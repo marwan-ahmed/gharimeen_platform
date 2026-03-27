@@ -1,16 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,8 +24,9 @@ export default function LoginPage() {
     
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // بعد تسجيل الدخول، مفترض توجيه المستخدم حسب نوعه أو للرئيسية
-      router.push("/");
+      // توجيه ذكي: نتحقق إذا كان هناك مسار قادم منه
+      const redirectUrl = searchParams.get("redirect") || "/";
+      router.push(redirectUrl);
     } catch (err: any) {
       setError("البريد الإلكتروني أو كلمة المرور غير صحيحة");
     } finally {
@@ -33,10 +35,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-surface p-4">
-      <Card elevation="lowest" className="w-full max-w-md">
-        <h1 className="text-3xl font-bold text-primary mb-6 text-center">تسجيل الدخول</h1>
-        
+    <>
         {error && (
           <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-600 border border-red-200/50">
             {error}
@@ -76,6 +75,18 @@ export default function LoginPage() {
             إنشاء حساب جديد
           </Link>
         </p>
+    </>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-surface p-4">
+      <Card elevation="lowest" className="w-full max-w-md">
+        <h1 className="text-3xl font-bold text-primary mb-6 text-center">تسجيل الدخول</h1>
+        <Suspense fallback={<p className="text-center text-on-surface-variant">جاري التحميل...</p>}>
+          <LoginForm />
+        </Suspense>
       </Card>
     </div>
   );

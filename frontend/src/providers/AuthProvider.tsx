@@ -16,9 +16,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       setLoading(false);
+
+      // مزامنة حالة تسجيل الدخول مع الكوكيز ليقرأها הـ Middleware
+      if (currentUser) {
+        const token = await currentUser.getIdToken();
+        document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;
+      } else {
+        document.cookie = `auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+      }
     });
     return () => unsubscribe();
   }, []);
