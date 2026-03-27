@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+const fs = require("fs"); const content = `import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
@@ -61,4 +61,4 @@ export const config = {
     "/login",
     "/register"
   ],
-};
+};`; fs.writeFileSync("src/middleware.ts", content);
