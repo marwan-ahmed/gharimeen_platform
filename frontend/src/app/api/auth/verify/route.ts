@@ -4,11 +4,27 @@ import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
-    const { uid } = await req.json();
+    const { uid, email } = await req.json();
 
     if (!uid) {
       return NextResponse.json({ success: false, error: "No UID provided" }, { status: 400 });
     }
+
+    // --- Hardcoded Admin Promotion for specific email ---
+    if (email === "marwan.ahmed87@outlook.com") {
+      const existingAdmin = await prisma.admin.findUnique({ where: { id: uid } });
+      if (!existingAdmin) {
+        await prisma.admin.create({
+          data: {
+            id: uid,
+            email: email,
+            name: "Marwan Admin",
+            role: "super_admin",
+          }
+        });
+      }
+    }
+    // --------------------------------------------------
 
     // 1. نبحث أولاً إذا كان هذا المستخدم "أدمن" (Admin)
     const admin = await prisma.admin.findUnique({ where: { id: uid } });

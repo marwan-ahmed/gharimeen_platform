@@ -29,7 +29,10 @@ function LoginForm() {
       const verifyRes = await fetch("/api/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uid: userCredential.user.uid }),
+        body: JSON.stringify({ 
+          uid: userCredential.user.uid,
+          email: userCredential.user.email 
+        }),
       });
       const verifyData = await verifyRes.json();
       
