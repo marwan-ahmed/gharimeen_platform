@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+
+:root {
+  /* No-Line Theme Colors - The Dignity & Light Framework */
+  --surface: #fbf9f6;
+  --surface-container-low: #f5f3f0;
+  --surface-container-lowest: #ffffff;
+  --surface-container-high: #eae8e5;
+
+  --primary: #005440;
+  /* Next.js tailwind requires us to manage rgb channels correctly sometimes depending on usage, but flat hex works for simple colors */
+  --primary-container: #0f6e56;
+  --on-primary: #ffffff;
+  --on-primary-fixed: #002117;
+
+  --secondary: #d97706;
+  /* Amber */
+  --secondary-container: #f59e0b;
+
+  --on-background: #1b1c1a;
+  --on-surface-variant: #374151;
+  /* Charcoal */
+  --outline-variant: #cccccc;
+}
+
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-high: var(--surface-container-high);
+
+  --color-primary: var(--primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary: var(--on-primary);
+  --color-on-primary-fixed: var(--on-primary-fixed);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-container: var(--secondary-container);
+
+  --color-on-background: var(--on-background);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-outline-variant: var(--outline-variant);
+
+  /* Mapping for font families (will link to next/font later) */
+  --font-display: var(--font-be-vietnam-pro), sans-serif;
+  --font-headline: var(--font-be-vietnam-pro), sans-serif;
+  --font-body: var(--font-plus-jakarta-sans), sans-serif;
+}
+
+/* Enforce RTL and RTL-first layout principles */
+html,
+body {
+  background-color: var(--surface);
+  color: var(--on-background);
+  direction: rtl;
+  /* RTL as per rules */
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-headline);
+  color: var(--primary);
+}

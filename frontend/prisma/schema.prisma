@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Gharim {
+  id             String        @id
+  nationalId     String        @unique  // BR-001: يمنع التكرار
+  fullName       String
+  phone          String
+  address        String
+  monthlyIncome  Decimal?
+  familyMembers  Int?
+  guarantorName  String?
+  guarantorPhone String?
+  debtRequests   DebtRequest[]
+  createdAt      DateTime      @default(now())
+}
+
+model DebtRequest {
+  id               String        @id @default(uuid())
+  gharimId         String
+  gharim           Gharim        @relation(fields: [gharimId], references: [id])
+  creditorName     String
+  creditorPhone    String
+  creditorAccount  String        // BR-002: وجهة الدفع الوحيدة
+  debtAmount       Decimal
+  documentType     DocumentType
+  documentUrl      String
+  status           RequestStatus @default(pending)
+  adminNotes       String?
+  reviewedBy       String?
+  reviewedAt       DateTime?
+  donations        Donation[]
+  payments         Payment[]
+  archivedAt       DateTime?     // BR-007: soft delete
+  createdAt        DateTime      @default(now())
+}
+
+model Donation {
+  id             String        @id @default(uuid())
+  donorId        String
+  donor          Donor         @relation(fields: [donorId], references: [id])
+  requestId      String?       // null = صندوق عام
+  request        DebtRequest?  @relation(fields: [requestId], references: [id])
+  amount         Decimal
+  type           DonationType
+  paymentStatus  PaymentStatus @default(pending)
+  transactionRef String?
+  createdAt      DateTime      @default(now())
+}
+
+model Payment {
+  id               String      @id @default(uuid())
+  requestId        String
+  request          DebtRequest @relation(fields: [requestId], references: [id])
+  amountPaid       Decimal
+  paidToCreditor   String
+  paymentMethod    String
+  receiptUrl       String?
+  paidAt           DateTime    @default(now())
+}
+
+model Donor {
+  id        String     @id
+  email     String     @unique
+  name      String?
+  phone     String?
+  donations Donation[]
+  createdAt DateTime   @default(now())
+}
+
+model Admin {
+  id        String   @id
+  email     String   @unique
+  name      String?
+  role      AdminRole @default(reviewer)
+  createdAt DateTime @default(now())
+}
+
+enum RequestStatus {
+  pending
+  approved
+  rejected
+  paid
+  archived
+}
+
+enum DonationType {
+  direct
+  general_fund
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  refunded
+}
+
+enum DocumentType {
+  court_order
+  contract
+  bank_receipt
+  written_testimony
+}
+
+enum AdminRole {
+  reviewer
+  manager
+  super_admin
+}
